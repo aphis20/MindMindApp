@@ -77,9 +77,9 @@ export default function Home() {
                   <Button
                     key={emotion}
                     variant="secondary"
-                    className={`bg-${
+                    className={`bg-[var(--${
                       emotionColorMap[emotion] || "muted"
-                    }-500 text-white rounded-full px-4 py-2`}
+                    })] text-white rounded-full px-4 py-2`}
                     onClick={() => handleManualSelection(emotion)}
                   >
                     {emotion}
@@ -87,14 +87,14 @@ export default function Home() {
                 ))}
                 <Button
                   variant="secondary"
-                  className="bg-muted-500 text-white rounded-full px-4 py-2"
+                  className="bg-[var(--muted)] text-white rounded-full px-4 py-2"
                   onClick={() => handleManualSelection("I'm not sure 🤔")}
                 >
                   I'm not sure 🤔
                 </Button>
                 <Button
                   variant="secondary"
-                  className="bg-secondary-500 text-white rounded-full px-4 py-2"
+                  className="bg-[var(--secondary)] text-white rounded-full px-4 py-2"
                   onClick={() => handleManualSelection("Just Browsing 😌")}
                 >
                   Just Browsing 😌
