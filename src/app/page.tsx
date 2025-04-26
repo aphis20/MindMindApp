@@ -11,9 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { detectEmotion } from "@/services/affectiva";
 import { detectEmotion as detectVoiceEmotion } from "@/services/deepgram";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [emotion, setEmotion] = useState<string | null>(null);
+    const router = useRouter();
+
 
   const handleCameraDetection = async () => {
     // Placeholder for camera emotion detection
@@ -72,7 +75,7 @@ export default function Home() {
                   You’re feeling: <span className="font-bold">{emotion}</span>
                 </p>
                 <div className="mt-4 flex space-x-4">
-                  <Button variant="secondary">Join a Circle</Button>
+                  <Button variant="secondary" onClick={() => router.push('/circles')}>Join a Circle</Button>
                   <Button variant="secondary">Ask a Support Question</Button>
                   <Button variant="secondary">Write a Journal Entry</Button>
                 </div>
@@ -84,3 +87,4 @@ export default function Home() {
     </div>
   );
 }
+
