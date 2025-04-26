@@ -1,17 +1,13 @@
 import type {Metadata} from 'next';
-import {Geist, Geist_Mono} from 'next/font/google';
+import {Inter} from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
   subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <div className="relative">
           <div className="absolute top-4 right-4">
             <Link href="/profile">
@@ -42,4 +38,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 
