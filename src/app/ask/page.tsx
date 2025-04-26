@@ -5,10 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 export default function AskQuestionPage() {
   const [question, setQuestion] = useState("");
   const [postAnonymously, setPostAnonymously] = useState(false);
+    const router = useRouter();
+
 
   const handleSubmit = () => {
     // Show empathy guidelines and submit the question
@@ -21,7 +25,12 @@ export default function AskQuestionPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
+            <Button variant="ghost" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+            </Button>
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
+
         <h1 className="text-4xl font-bold">Ask a Question</h1>
         <p className="text-lg mt-3">Share your thoughts and seek support.</p>
 
