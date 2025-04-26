@@ -21,6 +21,7 @@ import {
   YAxis,
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
 
 const data = [
   { name: "Day 1", uv: 400, pv: 2400, amt: 2400 },
@@ -32,8 +33,29 @@ const data = [
   { name: "Day 7", uv: 349, pv: 4300, amt: 2100 },
 ];
 
+// Placeholder for fetching user data and journey
+const useUserProfileData = () => {
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState({
+    username: "User894732",
+    profileImage: "https://picsum.photos/id/88/50/50",
+    helpedPeople: 57,
+    emotionalJourneyData: data, // Use the same data for the chart
+  });
+
+  useEffect(() => {
+    // Simulate fetching user data
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  }, []);
+
+  return { loading, userData };
+};
+
 export default function UserProfilePage() {
   const router = useRouter();
+  const { loading, userData } = useUserProfileData();
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-2">
@@ -54,38 +76,56 @@ export default function UserProfilePage() {
           <CardContent className="flex flex-col space-y-4">
             <div className="flex items-center space-x-4">
               <Avatar>
-                <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
-                <AvatarFallback>U</AvatarFallback>
+                {loading ? (
+                  <AvatarFallback>U</AvatarFallback>
+                ) : (
+                  <>
+                    <AvatarImage src={userData.profileImage} alt="User Avatar" />
+                    <AvatarFallback>U</AvatarFallback>
+                  </>
+                )}
               </Avatar>
               <div>
-                <p className="text-lg font-semibold">User894732</p>
+                {loading ? (
+                  <p className="text-lg font-semibold">Loading...</p>
+                ) : (
+                  <p className="text-lg font-semibold">{userData.username}</p>
+                )}
               </div>
             </div>
 
             <div className="w-full h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={data}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="pv" stroke="#8884d8" fill="#8884d8" />
-                </AreaChart>
-              </ResponsiveContainer>
+              {loading ? (
+                <p>Loading chart...</p>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={userData.emotionalJourneyData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="pv" stroke="#8884d8" fill="#8884d8" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
             </div>
 
-            <p className="text-lg">
-              You’ve helped 57 people feel seen.
-            </p>
+            {loading ? (
+              <p className="text-lg">Loading impact...</p>
+            ) : (
+              <p className="text-lg">
+                You’ve helped {userData.helpedPeople} people feel seen.
+              </p>
+            )}
           </CardContent>
         </Card>
 
         <Card className="w-full max-w-3xl mt-10">
           <CardContent>
-            <Tabs defaultvalue="reflections" className="w-full">
+            <Tabs defaultValue="reflections" className="w-full">
               <TabsList>
                 <TabsTrigger value="reflections">Reflections</TabsTrigger>
                 <TabsTrigger value="questions">Questions</TabsTrigger>
