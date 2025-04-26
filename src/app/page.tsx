@@ -68,7 +68,10 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
-        <h1 className="text-4xl font-bold">MindBridge</h1>
+        <div className="text-4xl font-bold">
+          <span className="text-primary">Mind</span>
+          <span className="text-secondary">Bridge</span>
+        </div>
         <p className="text-lg mt-3">
           A safe, AI-powered emotional support network.
         </p>
