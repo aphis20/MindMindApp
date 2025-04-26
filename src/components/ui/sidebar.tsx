@@ -175,7 +175,7 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } = useSidebar()
 
     if (collapsible === "none") {
       return (
@@ -253,6 +253,21 @@ const Sidebar = React.forwardRef<
             {children}
           </div>
         </div>
+        {/* Button to reappear sidebar */}
+        {state === "collapsed" && collapsible === "offcanvas" && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "absolute top-2 left-2 h-7 w-7",
+              side === "right" ? "rotate-180" : ""
+            )}
+            onClick={toggleSidebar}
+          >
+            <PanelLeft />
+            <span className="sr-only">Reappear Sidebar</span>
+          </Button>
+        )}
       </div>
     )
   }
@@ -761,4 +776,3 @@ export {
   SidebarTrigger,
   useSidebar,
 }
-
