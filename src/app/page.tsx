@@ -77,7 +77,7 @@ export default function Home() {
                 <div className="mt-4 flex space-x-4">
                   <Button variant="secondary" onClick={() => router.push('/circles')}>Join a Circle</Button>
                   <Button variant="secondary">Ask a Support Question</Button>
-                  <Button variant="secondary">Write a Journal Entry</Button>
+                  <Button variant="secondary" onClick={() => router.push('/profile')}>View Profile</Button>
                 </div>
               </div>
             )}
@@ -87,4 +87,3 @@ export default function Home() {
     </div>
   );
 }
-
