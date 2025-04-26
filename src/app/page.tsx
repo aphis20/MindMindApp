@@ -1,24 +1,28 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea"; // Import Textarea
 import { detectEmotion as detectFaceEmotion } from "@/services/affectiva"; // Renamed for clarity
 import { detectEmotion as detectVoiceEmotion } from "@/services/deepgram";
+import { analyzeTextEmotion } from "@/ai/flows/analyze-text-emotion"; // Import new AI flow
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react"; // Added loader icon
+import { Loader2, Type, Camera, Mic } from "lucide-react"; // Added icons
 import { toast } from "@/hooks/use-toast"; // For user feedback
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
 
 const emotionColorMap: { [key: string]: string } = {
   "Joyful 😊": "joy",
   "Excited 🤩": "excited",
   "Grateful 🙏": "grateful",
-  "Proud 🏆": "proud", // Added
+  "Proud 🏆": "proud",
   "Calm 🌿": "calm",
   "Hopeful 🌤️": "hopeful",
   "Curious 🤔": "curious",
   "Lonely 🧍‍♂️": "lonely",
-  "Sad 😔": "sad", // Changed emoji
+  "Sad 😔": "sad",
   "Anxious 😰": "anxious",
   "Angry 😠": "angry",
   "Grieving 🖤": "grieving",
@@ -28,10 +32,9 @@ const emotionColorMap: { [key: string]: string } = {
   "Healing 💖": "healing",
   "Vulnerable 🫥": "vulnerable",
   "I'm not sure 🤔": "muted",
-  "Just Browsing 😌": "secondary", // Keep secondary for neutral browsing
+  "Just Browsing 😌": "secondary",
 };
 
-// Use the more comprehensive list for manual selection
 const allEmotions = Object.keys(emotionColorMap);
 const trendingEmotions = [
   "Joyful 😊",
@@ -43,43 +46,101 @@ const trendingEmotions = [
 
 export default function Home() {
   const [emotion, setEmotion] = useState<string | null>(null);
+  const [textToCheckIn, setTextToCheckIn] = useState(""); // State for text input
   const [isLoadingCamera, setIsLoadingCamera] = useState(false);
   const [isLoadingVoice, setIsLoadingVoice] = useState(false);
+  const [isLoadingText, setIsLoadingText] = useState(false); // Loading state for text analysis
+  const [showTextInput, setShowTextInput] = useState(false); // State to show/hide text input area
   const router = useRouter();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      try {
+        // Try to get camera stream to check permission without starting it immediately
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setHasCameraPermission(true);
+        // Immediately stop the tracks to release the camera
+        stream.getTracks().forEach(track => track.stop());
+        if (videoRef.current) {
+          videoRef.current.srcObject = null; // Ensure video element doesn't hold the stream
+        }
+
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        // Only show toast if permission is explicitly denied, not on initial load check fail silently
+         if ((error as Error).name === 'NotAllowedError') {
+            toast({
+              variant: 'destructive',
+              title: 'Camera Access Denied',
+              description: 'Please enable camera permissions in your browser settings to use camera detection.',
+           });
+         }
+      }
+    };
+
+    getCameraPermission();
+  }, []);
+
 
   const handleCameraDetection = async () => {
+    if (!hasCameraPermission) {
+        toast({
+            variant: "destructive",
+            title: "Camera Permission Required",
+            description: "Please grant camera access in your browser settings.",
+        });
+        return;
+    }
     setIsLoadingCamera(true);
-    setEmotion(null); // Reset emotion while detecting
+    setEmotion(null);
+    setShowTextInput(false);
     try {
-      // Placeholder for actual camera capture and processing
-      // In a real app, you'd use getUserMedia, capture a frame, convert to buffer
-      const imageBuffer = Buffer.from(""); // Replace with actual image buffer from camera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+         if (videoRef.current) {
+           videoRef.current.srcObject = stream;
+           await new Promise(resolve => videoRef.current!.onloadedmetadata = resolve); // Wait for metadata
+           videoRef.current.play();
 
-      if (!imageBuffer || imageBuffer.length === 0) {
-         toast({
-             variant: "destructive",
-             title: "Camera Error",
-             description: "Could not capture image from camera.",
-         });
-         setIsLoadingCamera(false);
-         return;
-      }
+           // Capture a frame after a short delay to ensure the video is playing
+           await new Promise(resolve => setTimeout(resolve, 500));
 
-      const emotionData = await detectFaceEmotion(imageBuffer);
-      // --- Logic to map detected emotionData to one of the predefined emotion strings ---
-      // This is a simplified example; you'd need a more robust mapping based on dominant emotion
-      let detectedEmotion = "I'm not sure 🤔"; // Default
-      if (emotionData.joy > 0.5) detectedEmotion = "Joyful 😊";
-      else if (emotionData.sadness > 0.5) detectedEmotion = "Sad 😔";
-      else if (emotionData.anger > 0.5) detectedEmotion = "Angry 😠";
-      // Add more sophisticated mapping logic here based on your API's output
-      // For example, check anxiety proxies if the API provides them
+           const canvas = document.createElement('canvas');
+           canvas.width = videoRef.current.videoWidth;
+           canvas.height = videoRef.current.videoHeight;
+           const ctx = canvas.getContext('2d');
+           if (!ctx) throw new Error('Could not get canvas context');
+           ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+           const dataUrl = canvas.toDataURL('image/png');
+           // Stop video stream
+           stream.getTracks().forEach(track => track.stop());
+           videoRef.current.srcObject = null;
 
-      setEmotion(detectedEmotion);
-      toast({
-        title: "Emotion Detected",
-        description: `Detected: ${detectedEmotion}`,
-      });
+
+          // Extract base64 data
+          const base64Data = dataUrl.split(',')[1];
+          if (!base64Data) throw new Error('Could not extract base64 data from image');
+          const imageBuffer = Buffer.from(base64Data, 'base64');
+
+
+        const emotionData = await detectFaceEmotion(imageBuffer);
+        let detectedEmotion = "I'm not sure 🤔";
+        if (emotionData.joy > 0.5) detectedEmotion = "Joyful 😊";
+        else if (emotionData.sadness > 0.5) detectedEmotion = "Sad 😔";
+        else if (emotionData.anger > 0.5) detectedEmotion = "Angry 😠";
+        // Add more sophisticated mapping logic here based on your API's output
+
+        setEmotion(detectedEmotion);
+        toast({
+          title: "Emotion Detected",
+          description: `Detected via Camera: ${detectedEmotion}`,
+        });
+        } else {
+             throw new Error("Video ref not available");
+        }
+
     } catch (error) {
       console.error("Camera detection error:", error);
       toast({
@@ -87,7 +148,7 @@ export default function Home() {
         title: "Detection Failed",
         description: "Could not detect emotion from camera. Please try again or select manually.",
       });
-       setEmotion("I'm not sure 🤔"); // Set to unsure on error
+       setEmotion("I'm not sure 🤔");
     } finally {
       setIsLoadingCamera(false);
     }
@@ -96,24 +157,22 @@ export default function Home() {
   const handleVoiceDetection = async () => {
     setIsLoadingVoice(true);
     setEmotion(null);
+     setShowTextInput(false);
     try {
       // Placeholder for actual microphone recording and processing
-      // In a real app, you'd use MediaRecorder API, get audio blob, convert to buffer
       const audioBuffer = Buffer.from(""); // Replace with actual audio buffer
 
       if (!audioBuffer || audioBuffer.length === 0) {
          toast({
              variant: "destructive",
              title: "Microphone Error",
-             description: "Could not record audio from microphone.",
+             description: "Could not record audio from microphone. (Feature not fully implemented)",
          });
          setIsLoadingVoice(false);
          return;
       }
 
-
       const emotionData = await detectVoiceEmotion(audioBuffer);
-      // --- Logic to map detected emotionData to one of the predefined emotion strings ---
       let detectedEmotion = "I'm not sure 🤔";
        if (emotionData.joy > 0.5) detectedEmotion = "Joyful 😊";
        else if (emotionData.sadness > 0.5) detectedEmotion = "Sad 😔";
@@ -121,7 +180,7 @@ export default function Home() {
       setEmotion(detectedEmotion);
        toast({
         title: "Emotion Detected",
-        description: `Detected: ${detectedEmotion}`,
+        description: `Detected via Mic: ${detectedEmotion}`,
       });
     } catch (error) {
       console.error("Voice detection error:", error);
@@ -136,24 +195,58 @@ export default function Home() {
     }
   };
 
+   const handleTextAnalysis = async () => {
+     if (!textToCheckIn.trim()) {
+       toast({
+         variant: "destructive",
+         title: "Input Required",
+         description: "Please type how you are feeling before analyzing.",
+       });
+       return;
+     }
+     setIsLoadingText(true);
+     setEmotion(null);
+     try {
+       const result = await analyzeTextEmotion({ text: textToCheckIn });
+       // Map the result.emotion to one of the predefined keys in emotionColorMap
+       // This requires the AI flow to return an emotion string that *matches* one of the keys
+       const detectedEmotionKey = Object.keys(emotionColorMap).find(key => key.startsWith(result.emotion)) || "I'm not sure 🤔";
+       setEmotion(detectedEmotionKey);
+       toast({
+         title: "Emotion Analyzed",
+         description: `Detected via Text: ${detectedEmotionKey}`,
+       });
+     } catch (error) {
+       console.error("Text analysis error:", error);
+       toast({
+         variant: "destructive",
+         title: "Analysis Failed",
+         description: "Could not analyze emotion from text. Please try again or select manually.",
+       });
+       setEmotion("I'm not sure 🤔");
+     } finally {
+       setIsLoadingText(false);
+     }
+   };
+
   const handleManualSelection = (selectedEmotion: string) => {
     setEmotion(selectedEmotion);
-    // Optionally, add a toast confirmation for manual selection
+    setShowTextInput(false); // Hide text input on manual selection
      toast({
        title: "Emotion Selected",
        description: `You selected: ${selectedEmotion}`,
      });
   };
 
-  const isLoading = isLoadingCamera || isLoadingVoice;
+  const isLoading = isLoadingCamera || isLoadingVoice || isLoadingText;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
-         {/* Updated Logo */}
-         <div className="flex items-center gap-2 mb-4 text-4xl font-bold">
+         {/* Logo */}
+          <div className="flex items-center gap-2 mb-4 text-4xl font-bold">
              <svg
-               width="32" // Increased size
+               width="32"
                height="32"
                viewBox="0 0 24 24"
                fill="none"
@@ -175,36 +268,68 @@ export default function Home() {
                />
              </svg>
              <span className="text-primary">Mind</span>
-             <span>Bridge</span> {/* Second part uses default foreground color */}
+             <span>Bridge</span>
          </div>
         <p className="text-lg mt-3 text-muted-foreground max-w-prose">
           A safe, AI-powered emotional support network. How are you feeling today?
         </p>
 
-        <Card className="w-full max-w-lg mt-10 shadow-lg"> {/* Increased max-width */}
+        <Card className="w-full max-w-lg mt-10 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-2xl">Check In</CardTitle> {/* Adjusted size */}
+            <CardTitle className="text-2xl">Check In</CardTitle>
             <CardDescription>
-              Use camera, voice, or manual selection to identify your current
-              emotional state.
+              How are you feeling? Use camera, mic, text, or select manually.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col space-y-6"> {/* Increased spacing */}
+          <CardContent className="flex flex-col space-y-6">
             {/* Detection Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button onClick={handleCameraDetection} disabled={isLoading} size="lg">
-                  {isLoadingCamera ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Detect via Camera
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Button onClick={handleCameraDetection} disabled={isLoading || hasCameraPermission === false} size="lg">
+                  {isLoadingCamera ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Camera className="mr-2 h-4 w-4" />}
+                  Camera
                 </Button>
                 <Button onClick={handleVoiceDetection} disabled={isLoading} size="lg">
-                   {isLoadingVoice ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Detect via Mic
+                   {isLoadingVoice ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mic className="mr-2 h-4 w-4" />}
+                  Mic
                 </Button>
+                 <Button onClick={() => setShowTextInput(prev => !prev)} disabled={isLoading} size="lg" variant={showTextInput ? "secondary" : "outline"}>
+                    <Type className="mr-2 h-4 w-4" />
+                    Text
+                 </Button>
             </div>
+
+             {/* Hidden Video Element for Camera Capture */}
+             <video ref={videoRef} className="w-0 h-0 absolute" autoPlay muted playsInline />
+
+             {/* Camera Permission Alert */}
+             { hasCameraPermission === false && (
+                <Alert variant="destructive">
+                  <Camera className="h-4 w-4" />
+                  <AlertTitle>Camera Access Denied</AlertTitle>
+                  <AlertDescription>
+                    Please allow camera access in your browser settings to use the camera detection feature.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+
+             {/* Text Input Area */}
+             {showTextInput && (
+              <div className="flex flex-col space-y-2">
+                 <Textarea
+                   placeholder="Describe how you're feeling..."
+                   value={textToCheckIn}
+                   onChange={(e) => setTextToCheckIn(e.target.value)}
+                   disabled={isLoadingText}
+                   rows={3}
+                 />
+                 <Button onClick={handleTextAnalysis} disabled={isLoading || !textToCheckIn.trim()}>
+                    {isLoadingText ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                   Analyze Text
+                 </Button>
+              </div>
+             )}
+
 
              <div className="relative">
                <div className="absolute inset-0 flex items-center">
@@ -225,20 +350,26 @@ export default function Home() {
                 {trendingEmotions.map((emo) => (
                   <Button
                     key={emo}
-                    variant={emotion === emo ? "default" : "outline"} // Highlight selected
-                    // Applying dynamic background based on the emotionColorMap
-                    className={`bg-[hsl(var(--${emotionColorMap[emo] || 'muted'}))] text-foreground border-[hsl(var(--${emotionColorMap[emo] || 'border'}))] hover:bg-[hsl(var(--${emotionColorMap[emo] || 'muted'}))/0.9] rounded-full px-4 py-2 transition-all`}
+                    variant={emotion === emo ? "default" : "outline"}
+                    className={cn(
+                        `text-foreground border border-[hsl(var(--border))] hover:opacity-90 rounded-full px-4 py-2 transition-all`,
+                        emotion === emo ? `bg-[hsl(var(--${emotionColorMap[emo] || 'primary'}))] text-primary-foreground border-transparent`
+                                        : `bg-[hsl(var(--${emotionColorMap[emo] || 'muted'}))] hover:bg-[hsl(var(--${emotionColorMap[emo] || 'muted'}))/0.9]`
+                    )}
                     onClick={() => handleManualSelection(emo)}
                     disabled={isLoading}
                   >
                     {emo}
                   </Button>
                 ))}
-                 {/* Add "Not Sure" and "Browsing" separately for better control */}
                   <Button
                     key="unsure"
                     variant={emotion === "I'm not sure 🤔" ? "default" : "outline"}
-                    className={`bg-[hsl(var(--muted))] text-muted-foreground border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))/0.9] rounded-full px-4 py-2 transition-all`}
+                    className={cn(
+                        `text-muted-foreground border border-[hsl(var(--border))] hover:opacity-90 rounded-full px-4 py-2 transition-all`,
+                         emotion === "I'm not sure 🤔" ? `bg-[hsl(var(--muted))] text-primary-foreground border-transparent`
+                                                      : `bg-[hsl(var(--muted))] hover:bg-[hsl(var(--muted))/0.9]`
+                    )}
                     onClick={() => handleManualSelection("I'm not sure 🤔")}
                     disabled={isLoading}
                   >
@@ -247,13 +378,16 @@ export default function Home() {
                   <Button
                     key="browsing"
                     variant={emotion === "Just Browsing 😌" ? "default" : "outline"}
-                    className={`bg-[hsl(var(--secondary))] text-secondary-foreground border-[hsl(var(--border))] hover:bg-[hsl(var(--secondary))/0.9] rounded-full px-4 py-2 transition-all`}
+                     className={cn(
+                        `text-secondary-foreground border border-[hsl(var(--border))] hover:opacity-90 rounded-full px-4 py-2 transition-all`,
+                         emotion === "Just Browsing 😌" ? `bg-[hsl(var(--secondary))] text-primary-foreground border-transparent`
+                                                       : `bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))/0.9]`
+                    )}
                     onClick={() => handleManualSelection("Just Browsing 😌")}
                      disabled={isLoading}
                   >
                     Just Browsing 😌
                   </Button>
-                   {/* Add a button/link to see all emotions later if needed */}
               </div>
             </div>
 
@@ -265,21 +399,21 @@ export default function Home() {
                 </p>
                 <div className="mt-4 flex flex-col sm:flex-row gap-3">
                   <Button
-                    variant="default" // Changed to default for primary action
+                    variant="default"
                     onClick={() => router.push("/circles")}
                     className="flex-1"
                   >
                     Join a Circle
                   </Button>
                   <Button
-                    variant="outline" // Changed to outline for secondary action
+                    variant="outline"
                     onClick={() => router.push("/ask")}
                      className="flex-1"
                   >
                     Ask a Question
                   </Button>
                    <Button
-                    variant="outline" // Changed to outline for secondary action
+                    variant="outline"
                     onClick={() => router.push("/journal")}
                      className="flex-1"
                   >
@@ -293,4 +427,12 @@ export default function Home() {
       </main>
     </div>
   );
+}
+
+// Helper function to cn (classnames) - assuming it's in lib/utils
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
