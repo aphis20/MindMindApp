@@ -13,16 +13,23 @@ import { detectEmotion } from "@/services/affectiva";
 import { detectEmotion as detectVoiceEmotion } from "@/services/deepgram";
 import { useRouter } from "next/navigation";
 
+const emotionColorMap: { [key: string]: string } = {
+  "Happy 😊": "joy",
+  "Sad 😔": "sadness",
+  "Anxious 😟": "anxiety",
+  "I'm not sure 🤔": "muted",
+  "Just Browsing 😌": "secondary",
+};
+
 export default function Home() {
   const [emotion, setEmotion] = useState<string | null>(null);
-    const router = useRouter();
-
+  const router = useRouter();
 
   const handleCameraDetection = async () => {
     // Placeholder for camera emotion detection
     console.log("Camera detection triggered");
     const emotionData = await detectEmotion(Buffer.from("")); // Replace with actual image buffer
-    setEmotion(`Anxious + Overwhelmed 😔`); // Update with actual emotion detection logic
+    setEmotion(`Anxious 😟`); // Update with actual emotion detection logic
   };
 
   const handleVoiceDetection = async () => {
@@ -35,6 +42,14 @@ export default function Home() {
   const handleManualSelection = (selectedEmotion: string) => {
     setEmotion(selectedEmotion);
   };
+
+  const trendingEmotions = [
+    "Happy 😊",
+    "Sad 😔",
+    "Anxious 😟",
+    "Grateful 🙏",
+    "Reflective 💡",
+  ];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -57,15 +72,32 @@ export default function Home() {
             <Button onClick={handleVoiceDetection}>Detect via Microphone</Button>
             <div>
               <p className="mb-2">Select Manually:</p>
-              <div className="flex space-x-2">
-                <Button onClick={() => handleManualSelection("Happy 😊")}>
-                  Happy 😊
+              <div className="flex flex-wrap justify-center gap-2">
+                {trendingEmotions.map((emotion) => (
+                  <Button
+                    key={emotion}
+                    variant="secondary"
+                    className={`bg-${
+                      emotionColorMap[emotion] || "muted"
+                    }-500 text-white rounded-full px-4 py-2`}
+                    onClick={() => handleManualSelection(emotion)}
+                  >
+                    {emotion}
+                  </Button>
+                ))}
+                <Button
+                  variant="secondary"
+                  className="bg-muted-500 text-white rounded-full px-4 py-2"
+                  onClick={() => handleManualSelection("I'm not sure 🤔")}
+                >
+                  I'm not sure 🤔
                 </Button>
-                <Button onClick={() => handleManualSelection("Sad 😔")}>
-                  Sad 😔
-                </Button>
-                <Button onClick={() => handleManualSelection("Anxious 😟")}>
-                  Anxious 😟
+                <Button
+                  variant="secondary"
+                  className="bg-secondary-500 text-white rounded-full px-4 py-2"
+                  onClick={() => handleManualSelection("Just Browsing 😌")}
+                >
+                  Just Browsing 😌
                 </Button>
               </div>
             </div>
@@ -75,8 +107,18 @@ export default function Home() {
                   You’re feeling: <span className="font-bold">{emotion}</span>
                 </p>
                 <div className="mt-4 flex space-x-4">
-                  <Button variant="secondary" onClick={() => router.push('/circles')}>Join a Circle</Button>
-                  <Button variant="secondary" onClick={() => router.push('/ask')}>Ask a Support Question</Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => router.push("/circles")}
+                  >
+                    Join a Circle
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => router.push("/ask")}
+                  >
+                    Ask a Support Question
+                  </Button>
                 </div>
               </div>
             )}
@@ -86,4 +128,3 @@ export default function Home() {
     </div>
   );
 }
-
