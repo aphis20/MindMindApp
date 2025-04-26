@@ -7,6 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, LifeBuoy, Mail, MessageSquareQuestion } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
+// Force dynamic rendering for this page to avoid static export issues during build
+export const dynamic = 'force-dynamic';
+
 // Example FAQ data
 const faqs = [
   {
