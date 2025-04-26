@@ -2,19 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
-    --background: 255 251 247; /* Off-White */
+    --background: 255 100% 98%; /* Lighter Off-White */
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 249 55% 5%; /* Dark Lavender */
+    --primary: 250 60% 55%; /* Slightly brighter Dark Lavender */
     --primary-foreground: 0 0% 98%;
     --secondary: 220 14.3% 95.9%; /* Light Grey */
     --secondary-foreground: 240 5.9% 10%;
@@ -26,95 +22,76 @@ body {
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 249 55% 5%; /* Dark Lavender */
+    --ring: 250 60% 55%; /* Match primary */
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Emotion-reactive themes */
-    --joy: 48 100% 50%; /* Yellow-Gold */
-    --excited: 49 96% 57%; /* Orange */
-    --grateful: 120 47% 86%; /* Light Green */
-    --proud: 39 77% 67%; /* Gold */
+    /* Emotion-reactive themes - Refined HSL values */
+    --joy: 45 100% 60%; /* Brighter Yellow-Gold */
+    --excited: 35 100% 65%; /* Vibrant Orange */
+    --grateful: 145 50% 75%; /* Softer Light Green */
+    --proud: 39 85% 65%; /* Warmer Gold */
 
-    --calm: 142 37% 78%; /* Light Teal */
-    --hopeful: 171 63% 46%; /* Aqua */
-    --curious: 26 83% 82%; /* Light Orange */
-    --lonely: 264 24% 57%; /* Lavender */
+    --calm: 170 40% 80%; /* Lighter Teal */
+    --hopeful: 185 55% 50%; /* Clearer Aqua */
+    --curious: 30 90% 75%; /* Brighter Light Orange */
+    --lonely: 260 30% 65%; /* Muted Lavender */
 
-    --sad: 231 48% 48%; /* Indigo */
-    --anxious: 359 68% 59%; /* Light Red */
-    --angry: 0 77% 67%; /* Red */
-    --grieving: 210 13% 45%; /* Slate-Grey */
-    --drained: 51 21% 48%; /* Brown */
+    --sad: 225 50% 55%; /* Slightly lighter Indigo */
+    --anxious: 0 70% 70%; /* Softer Light Red */
+    --angry: 0 80% 60%; /* Stronger Red */
+    --grieving: 210 15% 55%; /* Darker Slate-Grey */
+    --drained: 40 25% 55%; /* Muted Brown */
 
-    --confused: 30 14% 54%; /* Light Brown */
-    --insecure: 340 38% 49%; /* Pink */
-    --healing: 270 20% 90%; /* Lavender */
-    --vulnerable: 330 21% 61%; /* Light Pink */
+    --confused: 30 20% 60%; /* Neutral Light Brown */
+    --insecure: 335 45% 60%; /* Muted Pink */
+    --healing: 275 40% 88%; /* Paler Lavender */
+    --vulnerable: 340 30% 70%; /* Softer Light Pink */
   }
 
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 240 5% 10%; /* Slightly lighter dark card */
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 249 55% 5%; /* Dark Lavender */
+    --primary: 250 70% 70%; /* Lighter Lavender for dark mode contrast */
+    --primary-foreground: 240 5% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 240 70% 15.9%; /* Dark Lavender */
+    --accent: 240 5% 20%; /* Darker accent */
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 40.6%; /* Slightly darker destructive */
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 0 0% 83.1%;
+    --ring: 250 70% 70%; /* Match primary */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Emotion-reactive themes */
-    --joy: 48 100% 50%; /* Yellow-Gold */
-    --excited: 49 96% 57%; /* Orange */
-    --grateful: 120 47% 86%; /* Light Green */
-    --proud: 39 77% 67%; /* Gold */
-
-    --calm: 142 37% 78%; /* Light Teal */
-    --hopeful: 171 63% 46%; /* Aqua */
-    --curious: 26 83% 82%; /* Light Orange */
-    --lonely: 264 24% 57%; /* Lavender */
-
-    --sad: 231 48% 48%; /* Indigo */
-    --anxious: 359 68% 59%; /* Light Red */
-    --angry: 0 77% 67%; /* Red */
-    --grieving: 210 13% 45%; /* Slate-Grey */
-    --drained: 51 21% 48%; /* Brown */
-
-    --confused: 30 14% 54%; /* Light Brown */
-    --insecure: 340 38% 49%; /* Pink */
-    --healing: 270 20% 90%; /* Lavender */
-    --vulnerable: 330 21% 61%; /* Light Pink */
+     /* Emotion-reactive themes - Adjusted for dark mode */
+    --joy: 45 100% 60%;
+    --excited: 35 100% 65%;
+    --grateful: 145 50% 75%;
+    --proud: 39 85% 65%;
+    --calm: 170 40% 80%;
+    --hopeful: 185 55% 50%;
+    --curious: 30 90% 75%;
+    --lonely: 260 30% 65%;
+    --sad: 225 50% 55%;
+    --anxious: 0 70% 70%;
+    --angry: 0 80% 60%;
+    --grieving: 210 15% 55%;
+    --drained: 40 25% 55%;
+    --confused: 30 20% 60%;
+    --insecure: 335 45% 60%;
+    --healing: 275 40% 88%;
+    --vulnerable: 340 30% 70%;
   }
 }
 
@@ -124,6 +101,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-inter), sans-serif; /* Use CSS variable */
   }
 }
