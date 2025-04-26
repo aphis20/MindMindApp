@@ -1,6 +1,8 @@
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
+import Link from 'next/link';
+import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,8 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
+        <div className="relative">
+          <div className="absolute top-4 right-4">
+            <Link href="/profile">
+              <Avatar>
+                <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
+          {children}
+        </div>
       </body>
     </html>
   );
 }
+
