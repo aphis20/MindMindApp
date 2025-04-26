@@ -17,6 +17,7 @@ const emotionColorMap: { [key: string]: string } = {
   "Happy 😊": "joy",
   "Sad 😔": "sadness",
   "Anxious 😟": "anxiety",
+  "Grateful 🙏": "hope",
   "I'm not sure 🤔": "muted",
   "Just Browsing 😌": "secondary",
 };
@@ -128,3 +129,4 @@ export default function Home() {
     </div>
   );
 }
+
