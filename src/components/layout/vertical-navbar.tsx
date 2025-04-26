@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -10,6 +11,8 @@ import {
   User,
   PanelLeft,
   PanelRight,
+  BookOpen, // Added for Resources
+  LifeBuoy, // Added for Support
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +30,8 @@ const navItems = [
   { href: "/circles", icon: Circle, label: "Circles" },
   { href: "/ask", icon: MessageSquare, label: "Ask" },
   { href: "/journal", icon: FileText, label: "Journal" },
-  { href: "/support", icon: Heart, label: "Support Inbox" },
+  { href: "/resources", icon: BookOpen, label: "Resources" }, // Added Resources
+  { href: "/support", icon: LifeBuoy, label: "Support" }, // Updated Support Icon & Label
 ];
 
 export function VerticalNavbar() {
@@ -94,6 +98,7 @@ export function VerticalNavbar() {
                           "w-full justify-start",
                           isCollapsed ? "px-0 justify-center" : ""
                         )}
+                        aria-label={item.label}
                       >
                         <item.icon
                           className={cn("h-5 w-5", isCollapsed ? "" : "mr-3")}
@@ -119,7 +124,7 @@ export function VerticalNavbar() {
            <Tooltip>
             <TooltipTrigger asChild>
                 <Link href="/profile" legacyBehavior passHref>
-                   <Button variant="ghost" className={cn("w-full justify-start", isCollapsed ? "px-0 justify-center" : "")}>
+                   <Button variant="ghost" className={cn("w-full justify-start", isCollapsed ? "px-0 justify-center" : "")} aria-label="Profile">
                      <Avatar className={cn("h-6 w-6", isCollapsed ? "" : "mr-3")}>
                         <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
                         <AvatarFallback>U</AvatarFallback>
@@ -138,20 +143,27 @@ export function VerticalNavbar() {
           </div>
 
           {/* Collapse Button */}
-          <Button
-            variant="ghost"
-            onClick={toggleCollapse}
-            className={cn("w-full justify-start", isCollapsed ? "px-0 justify-center" : "")}
-          >
-            {isCollapsed ? (
-              <PanelRight className="h-5 w-5" />
-            ) : (
-              <>
-               <PanelLeft className="h-5 w-5 mr-3" />
-               <span>Collapse</span>
-              </>
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    variant="ghost"
+                    onClick={toggleCollapse}
+                    className={cn("w-full justify-start", isCollapsed ? "px-0 justify-center" : "")}
+                    aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
+                    {isCollapsed ? (
+                    <PanelRight className="h-5 w-5" />
+                    ) : (
+                    <>
+                    <PanelLeft className="h-5 w-5 mr-3" />
+                    <span>Collapse</span>
+                    </>
+                    )}
+                </Button>
+             </TooltipTrigger>
+              {isCollapsed && <TooltipContent side="right"><p>Expand</p></TooltipContent>}
+              {!isCollapsed && <TooltipContent side="right"><p>Collapse</p></TooltipContent>}
+           </Tooltip>
         </div>
       </nav>
     </TooltipProvider>

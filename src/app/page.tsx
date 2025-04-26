@@ -9,7 +9,7 @@ import { detectEmotion as detectFaceEmotion } from "@/services/affectiva"; // Re
 import { detectEmotion as detectVoiceEmotion } from "@/services/deepgram";
 import { analyzeTextEmotion } from "@/ai/flows/analyze-text-emotion"; // Import new AI flow
 import { useRouter } from "next/navigation";
-import { Loader2, Type, Camera, Mic } from "lucide-react"; // Added icons
+import { Loader2, Type, Camera, Mic, Pencil } from "lucide-react"; // Added Pencil icon
 import { toast } from "@/hooks/use-toast"; // For user feedback
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
 
@@ -397,7 +397,7 @@ export default function Home() {
                 <p className="text-lg">
                   You’re feeling: <span className="font-bold">{emotion}</span>
                 </p>
-                <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Button
                     variant="default"
                     onClick={() => router.push("/circles")}
@@ -417,7 +417,7 @@ export default function Home() {
                     onClick={() => router.push("/journal")}
                      className="flex-1"
                   >
-                    Write Journal Entry
+                    <Pencil className="mr-2 h-4 w-4" /> Write Journal Entry
                   </Button>
                 </div>
               </div>
