@@ -39,10 +39,25 @@ body {
 
     /* Emotion-reactive themes */
     --joy: 48 100% 50%; /* Yellow-Gold */
-    --sadness: 231 48% 48%; /* Indigo */
-    --grief: 210 13% 45%; /* Slate-Grey */
-    --hope: 171 63% 46%; /* Aqua */
+    --excited: 49 96% 57%; /* Orange */
+    --grateful: 120 47% 86%; /* Light Green */
+    --proud: 39 77% 67%; /* Gold */
+
+    --calm: 142 37% 78%; /* Light Teal */
+    --hopeful: 171 63% 46%; /* Aqua */
+    --curious: 26 83% 82%; /* Light Orange */
+    --lonely: 264 24% 57%; /* Lavender */
+
+    --sad: 231 48% 48%; /* Indigo */
+    --anxious: 359 68% 59%; /* Light Red */
+    --angry: 0 77% 67%; /* Red */
+    --grieving: 210 13% 45%; /* Slate-Grey */
+    --drained: 51 21% 48%; /* Brown */
+
+    --confused: 30 14% 54%; /* Light Brown */
+    --insecure: 340 38% 49%; /* Pink */
     --healing: 270 20% 90%; /* Lavender */
+    --vulnerable: 330 21% 61%; /* Light Pink */
   }
 
   .dark {
@@ -81,10 +96,25 @@ body {
 
     /* Emotion-reactive themes */
     --joy: 48 100% 50%; /* Yellow-Gold */
-    --sadness: 231 48% 48%; /* Indigo */
-    --grief: 210 13% 45%; /* Slate-Grey */
-    --hope: 171 63% 46%; /* Aqua */
+    --excited: 49 96% 57%; /* Orange */
+    --grateful: 120 47% 86%; /* Light Green */
+    --proud: 39 77% 67%; /* Gold */
+
+    --calm: 142 37% 78%; /* Light Teal */
+    --hopeful: 171 63% 46%; /* Aqua */
+    --curious: 26 83% 82%; /* Light Orange */
+    --lonely: 264 24% 57%; /* Lavender */
+
+    --sad: 231 48% 48%; /* Indigo */
+    --anxious: 359 68% 59%; /* Light Red */
+    --angry: 0 77% 67%; /* Red */
+    --grieving: 210 13% 45%; /* Slate-Grey */
+    --drained: 51 21% 48%; /* Brown */
+
+    --confused: 30 14% 54%; /* Light Brown */
+    --insecure: 340 38% 49%; /* Pink */
     --healing: 270 20% 90%; /* Lavender */
+    --vulnerable: 330 21% 61%; /* Light Pink */
   }
 }
 
@@ -96,4 +126,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-

@@ -14,17 +14,25 @@ import { detectEmotion as detectVoiceEmotion } from "@/services/deepgram";
 import { useRouter } from "next/navigation";
 
 const emotionColorMap: { [key: string]: string } = {
-  "Happy 😊": "joy",
-  "Sad 😔": "sadness",
-  "Anxious 😟": "sadness",
-  "Grateful 🙏": "hope",
-  "Calm 🌿": "hope",
-  "Lonely 🧍‍♂️": "sadness",
-  "Angry 😠": "destructive",
-  "Grieving 🖤": "grief",
-  "Confused 😕": "muted",
-    "I'm not sure 🤔": "muted",
-    "Just Browsing 😌": "secondary",
+  "Joyful 😊": "joy",
+  "Excited 🤩": "excited",
+  "Grateful 🙏": "grateful",
+  "Proud 🏆": "proud",
+  "Calm 🌿": "calm",
+  "Hopeful 🌤️": "hopeful",
+  "Curious 🤔": "curious",
+  "Lonely 🧍‍♂️": "lonely",
+  "Sad 😔": "sad",
+  "Anxious 😰": "anxious",
+  "Angry 😠": "angry",
+  "Grieving 🖤": "grieving",
+  "Drained 🥱": "drained",
+  "Confused 😕": "confused",
+  "Insecure 😟": "insecure",
+  "Healing 💖": "healing",
+  "Vulnerable 🫥": "vulnerable",
+  "I'm not sure 🤔": "muted",
+  "Just Browsing 😌": "secondary",
 };
 
 export default function Home() {
@@ -35,14 +43,14 @@ export default function Home() {
     // Placeholder for camera emotion detection
     console.log("Camera detection triggered");
     const emotionData = await detectEmotion(Buffer.from("")); // Replace with actual image buffer
-    setEmotion(`Anxious 😟`); // Update with actual emotion detection logic
+    setEmotion(`Anxious 😰`); // Update with actual emotion detection logic
   };
 
   const handleVoiceDetection = async () => {
     // Placeholder for voice emotion detection
     console.log("Voice detection triggered");
     const emotionData = await detectVoiceEmotion(Buffer.from("")); // Replace with actual audio buffer
-    setEmotion(`Calm + Reflective 😌`); // Update with actual emotion detection logic
+    setEmotion(`Calm 🌿`); // Update with actual emotion detection logic
   };
 
   const handleManualSelection = (selectedEmotion: string) => {
@@ -50,11 +58,11 @@ export default function Home() {
   };
 
   const trendingEmotions = [
-    "Happy 😊",
+    "Joyful 😊",
     "Sad 😔",
-    "Anxious 😟",
+    "Anxious 😰",
     "Grateful 🙏",
-    "Reflective 💡",
+    "Lonely 🧍‍♂️",
   ];
 
   return (
