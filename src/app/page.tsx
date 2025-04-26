@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Type, Camera, Mic, Pencil } from "lucide-react"; // Added Pencil icon
 import { toast } from "@/hooks/use-toast"; // For user feedback
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // Import Alert components
+import AuthButton from "@/components/auth/auth-button"; // Import AuthButton
 
 const emotionColorMap: { [key: string]: string } = {
   "Joyful 😊": "joy",
@@ -122,10 +123,19 @@ export default function Home() {
           // Extract base64 data
           const base64Data = dataUrl.split(',')[1];
           if (!base64Data) throw new Error('Could not extract base64 data from image');
-          const imageBuffer = Buffer.from(base64Data, 'base64');
+          // NOTE: Buffer is not available in the browser by default without polyfills/Node.js env
+          // For client-side processing, you'd typically send the dataUrl or blob directly
+          // Sending imageBuffer is kept here assuming a potential server-side processing step later
+          // If Affectiva SDK is used client-side, it will likely take the dataUrl or image element directly.
+          // const imageBuffer = Buffer.from(base64Data, 'base64'); // This line might need adjustment for browser-only context
+
+          // Placeholder: Simulating Affectiva call with dataUrl
+          console.log("Simulating Affectiva call with image dataUrl (first 50 chars):", dataUrl.substring(0, 50));
+          await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call delay
+          const emotionData = { joy: Math.random(), sadness: Math.random(), anger: Math.random(), surprise: Math.random()}; // Mock response
 
 
-        const emotionData = await detectFaceEmotion(imageBuffer);
+        // const emotionData = await detectFaceEmotion(imageBuffer); // Original call - might need Buffer polyfill or different approach
         let detectedEmotion = "I'm not sure 🤔";
         if (emotionData.joy > 0.5) detectedEmotion = "Joyful 😊";
         else if (emotionData.sadness > 0.5) detectedEmotion = "Sad 😔";
@@ -160,9 +170,14 @@ export default function Home() {
      setShowTextInput(false);
     try {
       // Placeholder for actual microphone recording and processing
-      const audioBuffer = Buffer.from(""); // Replace with actual audio buffer
+       console.log("Simulating microphone recording...");
+       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate recording delay
+       // const audioBuffer = Buffer.from(""); // Replace with actual audio buffer - Buffer needs polyfill browser-side
 
-      if (!audioBuffer || audioBuffer.length === 0) {
+       // Placeholder: Simulate no audio data scenario for demo
+       const audioBuffer = null; // Simulate no audio buffer available
+
+      if (!audioBuffer) { // Adjusted check for simulated scenario
          toast({
              variant: "destructive",
              title: "Microphone Error",
@@ -172,7 +187,13 @@ export default function Home() {
          return;
       }
 
-      const emotionData = await detectVoiceEmotion(audioBuffer);
+      // Placeholder: Simulating Deepgram call
+       console.log("Simulating Deepgram call with audio data...");
+       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call delay
+       const emotionData = { joy: Math.random(), sadness: Math.random(), anger: Math.random(), surprise: Math.random() }; // Mock response
+
+
+      // const emotionData = await detectVoiceEmotion(audioBuffer); // Original call
       let detectedEmotion = "I'm not sure 🤔";
        if (emotionData.joy > 0.5) detectedEmotion = "Joyful 😊";
        else if (emotionData.sadness > 0.5) detectedEmotion = "Sad 😔";
@@ -243,33 +264,39 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
-         {/* Logo */}
-          <div className="flex items-center gap-2 mb-4 text-4xl font-bold">
-             <svg
-               width="32"
-               height="32"
-               viewBox="0 0 24 24"
-               fill="none"
-               xmlns="http://www.w3.org/2000/svg"
-               className="text-primary"
-             >
-              <path
-                  d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
-                  fill="currentColor"
-              />
-              <path
-                  d="M12 6C9.24 6 7 8.24 7 11C7 13.76 9.24 16 12 16C14.76 16 17 13.76 17 11C17 8.24 14.76 6 12 6ZM12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z"
-                  fill="currentColor"
-              />
-              <path
-                  d="M18 11H20C20 14.31 17.31 17 14 17V19C18.42 19 22 15.42 22 11H18ZM4 11H6C6 7.69 8.69 5 12 5V3C7.58 3 4 6.58 4 11Z"
-                  fill="currentColor"
-                  opacity="0.6"
-               />
-             </svg>
-             <span className="text-primary">Mind</span>
-             <span>Bridge</span>
-         </div>
+          {/* Logo and Auth Button Row */}
+           <div className="w-full max-w-lg flex justify-between items-center mb-4">
+              {/* Logo */}
+              <div className="flex items-center gap-2 text-4xl font-bold">
+                 <svg
+                   width="32"
+                   height="32"
+                   viewBox="0 0 24 24"
+                   fill="none"
+                   xmlns="http://www.w3.org/2000/svg"
+                   className="text-primary"
+                 >
+                  <path
+                      d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                      fill="currentColor"
+                  />
+                  <path
+                      d="M12 6C9.24 6 7 8.24 7 11C7 13.76 9.24 16 12 16C14.76 16 17 13.76 17 11C17 8.24 14.76 6 12 6ZM12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z"
+                      fill="currentColor"
+                  />
+                  <path
+                      d="M18 11H20C20 14.31 17.31 17 14 17V19C18.42 19 22 15.42 22 11H18ZM4 11H6C6 7.69 8.69 5 12 5V3C7.58 3 4 6.58 4 11Z"
+                      fill="currentColor"
+                      opacity="0.6"
+                   />
+                 </svg>
+                 <span className="text-primary">Mind</span>
+                 <span>Bridge</span>
+              </div>
+               {/* Auth Button */}
+               <AuthButton />
+            </div>
+
         <p className="text-lg mt-3 text-muted-foreground max-w-prose">
           A safe, AI-powered emotional support network. How are you feeling today?
         </p>
