@@ -13,14 +13,14 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 export default function CircleRoomsPage() {
-    const router = useRouter();
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-            <Button variant="ghost" onClick={() => router.back()}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-            </Button>
+      <Button variant="ghost" onClick={() => router.back()}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back
+      </Button>
       <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
         <h1 className="text-4xl font-bold">Circle Rooms</h1>
         <p className="text-lg mt-3">Join a circle to share your thoughts.</p>

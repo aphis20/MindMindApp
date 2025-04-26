@@ -17,7 +17,6 @@ const emotionColorMap: { [key: string]: string } = {
   "Joyful 😊": "joy",
   "Excited 🤩": "excited",
   "Grateful 🙏": "grateful",
-  "Proud 🏆": "proud",
   "Calm 🌿": "calm",
   "Hopeful 🌤️": "hopeful",
   "Curious 🤔": "curious",
