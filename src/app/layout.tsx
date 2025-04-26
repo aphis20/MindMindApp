@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "next-themes"; // Corrected import
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { VerticalNavbar } from "@/components/layout/vertical-navbar";
 
 const inter = Inter({

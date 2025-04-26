@@ -15,7 +15,7 @@ export default function JournalPage() {
   const { toast } = useToast();
   const [entry, setEntry] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [sentiment, setSentiment] = useState<string | null>(null);
+  const [sentiment, setSentiment] = useState<{ sentiment: string; explanation?: string } | null>(null);
 
   const handleSave = async () => {
     if (!entry.trim()) {
@@ -38,7 +38,7 @@ export default function JournalPage() {
 
       // 2. Analyze sentiment using AI Flow
       const sentimentResult = await analyzeJournalEntrySentiment({ text: entry });
-      setSentiment(sentimentResult.sentiment); // Assuming the flow returns { sentiment: string }
+      setSentiment({ sentiment: sentimentResult.sentiment, explanation: sentimentResult.explanation }); // Assuming the flow returns { sentiment: string, explanation: string }
 
       toast({
         title: "Entry Saved",
@@ -83,9 +83,15 @@ export default function JournalPage() {
             className="text-base" // Ensure good readability
           />
           {sentiment && (
-            <p className="text-sm text-muted-foreground">
-              Detected Sentiment: <span className="font-medium">{sentiment}</span>
-            </p>
+            <div className="text-sm text-muted-foreground">
+              Detected Sentiment: <span className="font-medium">{sentiment.sentiment}</span>
+              {sentiment.explanation && (
+                <>
+                  <br />
+                  Explanation: {sentiment.explanation}
+                </>
+              )}
+            </div>
           )}
           <Button onClick={handleSave} disabled={isSaving || !entry.trim()}>
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

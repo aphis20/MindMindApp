@@ -25,6 +25,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: "/circles", icon: Circle, label: "Circles" },
@@ -37,10 +38,33 @@ const navItems = [
 export function VerticalNavbar() {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const pathname = usePathname();
+  const [userAvatar, setUserAvatar] = React.useState<string | null>(null);
+    const supabase = createClient();
+
+  React.useEffect(() => {
+      const fetchUserAvatar = async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && user.email) {
+              // Generate a consistent fallback avatar based on user's email
+              const emailHash = hashCode(user.email);
+              setUserAvatar(`https://picsum.photos/id/${emailHash}/50/50`); // Use hash for unique avatar
+          }
+      };
+      fetchUserAvatar();
+  }, [supabase.auth]);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
+
+    // Function to generate a hash code from a string (for avatar fallback)
+    function hashCode(str: string): number {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+        }
+        return Math.abs(hash) % 300; // To get a reasonable id for picsum
+    }
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -91,7 +115,7 @@ export function VerticalNavbar() {
               <li key={item.href}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Link href={item.href} legacyBehavior passHref>
+                    <Link href={item.href} passHref>
                       <Button
                         variant={pathname === item.href ? "secondary" : "ghost"}
                         className={cn(
@@ -123,11 +147,14 @@ export function VerticalNavbar() {
           {/* Profile Link */}
            <Tooltip>
             <TooltipTrigger asChild>
-                <Link href="/profile" legacyBehavior passHref>
+                <Link href="/profile" passHref>
                    <Button variant="ghost" className={cn("w-full justify-start", isCollapsed ? "px-0 justify-center" : "")} aria-label="Profile">
                      <Avatar className={cn("h-6 w-6", isCollapsed ? "" : "mr-3")}>
-                        <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
-                        <AvatarFallback>U</AvatarFallback>
+                                {userAvatar ? (
+                                    <AvatarImage src={userAvatar} alt="User Avatar" />
+                                ) : (
+                                    <AvatarFallback>U</AvatarFallback>
+                                )}
                      </Avatar>
                      {!isCollapsed && <span>Profile</span>}
                    </Button>
@@ -169,4 +196,3 @@ export function VerticalNavbar() {
     </TooltipProvider>
   );
 }
-
