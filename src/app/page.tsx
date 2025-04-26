@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 const emotionColorMap: { [key: string]: string } = {
   "Happy 😊": "joy",
   "Sad 😔": "sadness",
-  "Anxious 😟": "anxiety",
+  "Anxious 😟": "sadness",
   "Grateful 🙏": "hope",
   "Calm 🌿": "hope",
   "Lonely 🧍‍♂️": "sadness",
