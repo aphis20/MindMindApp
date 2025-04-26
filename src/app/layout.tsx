@@ -1,8 +1,10 @@
-import type {Metadata} from 'next';
-import {Inter} from 'next/font/google';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { Circle, FileText, Heart, LayoutDashboard, MessageSquare, Quote, User } from 'lucide-react';
 import Link from 'next/link';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,20 +25,87 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="relative">
-          <div className="absolute top-4 right-4">
-            <Link href="/profile">
-              <Avatar>
-                <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            </Link>
+        <SidebarProvider>
+          <Sidebar>
+            <SidebarHeader className="flex items-center justify-between">
+              <Link href="/" className="flex items-center space-x-2 font-semibold">
+                <span className="text-xl font-bold">
+                  <span className="text-primary">Mind</span>
+                  <span className="text-secondary">Bridge</span>
+                </span>
+              </Link>
+              <SidebarTrigger />
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/circles">
+                        <Circle className="mr-2 h-4 w-4" />
+                        <span>Circles</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/ask">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        <span>Ask</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/journal">
+                        <FileText className="mr-2 h-4 w-4" />
+                        <span>Journal</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/support">
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Support Inbox</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter>
+              <SidebarGroup>
+                <SidebarGroupLabel>
+                  Profile
+                </SidebarGroupLabel>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
+            </SidebarFooter>
+          </Sidebar>
+          <div className="relative">
+            <div className="absolute top-4 right-4">
+              <Link href="/profile">
+                <Avatar>
+                  <AvatarImage src="https://picsum.photos/id/88/50/50" alt="User Avatar" />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+              </Link>
+            </div>
+            {children}
           </div>
-          {children}
-        </div>
+        </SidebarProvider>
       </body>
     </html>
   );
 }
-
 
