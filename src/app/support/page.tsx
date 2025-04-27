@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, LifeBuoy, Mail, MessageSquareQuestion } from "lucide-react";
+import { ArrowLeft, LifeBuoy, Mail, HelpCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 // Force dynamic rendering for this page to avoid static export issues during build
@@ -74,7 +74,7 @@ export default function SupportPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageSquareQuestion className="h-5 w-5" /> Frequently Asked Questions
+              <HelpCircle className="h-5 w-5" /> Frequently Asked Questions
             </CardTitle>
             <CardDescription>Find quick answers below.</CardDescription>
           </CardHeader>
