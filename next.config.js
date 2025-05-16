@@ -19,8 +19,16 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // For Google profile pictures
+        port: '',
+        pathname: '/**',
+      }
     ],
+    unoptimized: true, // Required for static export
   },
+  output: 'export', // Enable static exports
 };
 
 module.exports = withBundleAnalyzer(nextConfig);

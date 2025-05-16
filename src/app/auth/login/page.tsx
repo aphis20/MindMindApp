@@ -1,0 +1,50 @@
+import { LoginForm } from '@/components/auth/login-form'
+import Link from 'next/link'
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen w-full bg-gradient-to-br from-background to-background/80 flex flex-col items-center justify-center p-4">
+      {/* Logo */}
+      <Link href="/" className="mb-8 group">
+        <div className="flex items-center gap-2">
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-primary transition-transform duration-300 group-hover:scale-110"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+              fill="currentColor"
+            />
+            <path
+              d="M12 6C9.24 6 7 8.24 7 11C7 13.76 9.24 16 12 16C14.76 16 17 13.76 17 11C17 8.24 14.76 6 12 6ZM12 14C10.34 14 9 12.66 9 11C9 9.34 10.34 8 12 8C13.66 8 15 9.34 15 11C15 12.66 13.66 14 12 14Z"
+              fill="currentColor"
+            />
+            <path
+              d="M18 11H20C20 14.31 17.31 17 14 17V19C18.42 19 22 15.42 22 11H18ZM4 11H6C6 7.69 8.69 5 12 5V3C7.58 3 4 6.58 4 11Z"
+              fill="currentColor"
+              opacity="0.6"
+            />
+          </svg>
+          <span className="text-2xl font-bold">
+            <span className="text-primary">Mind</span>Bridge
+          </span>
+        </div>
+      </Link>
+
+      {/* Login Form */}
+      <div className="w-full max-w-md">
+        <LoginForm />
+      </div>
+
+      {/* Footer */}
+      <div className="mt-8 text-center text-sm text-muted-foreground">
+        <p>Join our community of</p>
+        <p className="font-semibold text-primary">10,000+ members</p>
+      </div>
+    </div>
+  )
+} 

@@ -104,3 +104,344 @@
     font-family: var(--font-inter), sans-serif; /* Use CSS variable */
   }
 }
+
+/* Enhanced modern background design */
+.modern-bg {
+  background: 
+    radial-gradient(circle at 0% 0%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, hsl(var(--accent) / 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, hsl(var(--secondary) / 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+    linear-gradient(45deg, hsl(var(--primary) / 0.05) 0%, transparent 100%);
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    linear-gradient(45deg, transparent 48%, hsl(var(--primary) / 0.03) 49%, hsl(var(--primary) / 0.03) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, hsl(var(--primary) / 0.03) 49%, hsl(var(--primary) / 0.03) 51%, transparent 52%);
+  background-size: 60px 60px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.modern-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 50% 50%, transparent 0%, hsl(var(--background)) 100%),
+    linear-gradient(to bottom, hsl(var(--primary) / 0.05), transparent);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Add floating orbs */
+.modern-bg::before {
+  content: '';
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, hsl(var(--primary) / 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  top: -150px;
+  left: -150px;
+  animation: float-orb 20s ease-in-out infinite;
+}
+
+.modern-bg::after {
+  content: '';
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, hsl(var(--accent) / 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  bottom: -200px;
+  right: -200px;
+  animation: float-orb 25s ease-in-out infinite reverse;
+}
+
+@keyframes float-orb {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(100px, 100px) rotate(90deg);
+  }
+  50% {
+    transform: translate(0, 200px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-100px, 100px) rotate(270deg);
+  }
+}
+
+/* Enhanced glass card effect */
+.glass-card {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.1);
+  box-shadow: 
+    0 8px 32px -8px hsl(var(--primary) / 0.2),
+    0 4px 16px -4px hsl(var(--primary) / 0.1),
+    0 0 0 1px hsl(var(--border) / 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  box-shadow: 
+    0 12px 48px -12px hsl(var(--primary) / 0.3),
+    0 8px 24px -8px hsl(var(--primary) / 0.2),
+    0 0 0 1px hsl(var(--border) / 0.1);
+  transform: translateY(-2px);
+}
+
+/* Enhanced button styles */
+.button-modern {
+  @apply relative overflow-hidden transition-all duration-300;
+  background: hsl(var(--primary) / 0.1);
+  border: 1px solid hsl(var(--border) / 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+}
+
+.button-modern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    hsl(var(--primary) / 0.2),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.button-modern:hover {
+  background: hsl(var(--primary) / 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px hsl(var(--primary) / 0.2);
+}
+
+.button-modern:hover::before {
+  transform: translateX(100%);
+}
+
+/* Enhanced emotion buttons */
+.emotion-button {
+  @apply relative overflow-hidden transition-all duration-300 rounded-full;
+  background: hsl(var(--primary) / 0.08);
+  border: 1px solid hsl(var(--border) / 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+}
+
+.emotion-button:hover {
+  background: hsl(var(--primary) / 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px hsl(var(--primary) / 0.2);
+}
+
+.emotion-button.selected {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: transparent;
+  box-shadow: 0 6px 16px -4px hsl(var(--primary) / 0.3);
+}
+
+/* Enhanced text input */
+.modern-input {
+  @apply bg-background/30 backdrop-blur-sm border border-border/50 rounded-lg;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+}
+
+.modern-input:focus {
+  @apply border-primary/50;
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+  background: hsl(var(--background) / 0.4);
+}
+
+/* Enhanced alert styles */
+.modern-alert {
+  @apply bg-background/60 backdrop-blur-sm border border-border/50 rounded-lg;
+  box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+}
+
+/* Enhanced logo styles */
+.logo-container {
+  @apply relative overflow-hidden;
+  background: linear-gradient(45deg, hsl(var(--primary) / 0.15), transparent);
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 4px 12px -4px hsl(var(--primary) / 0.1);
+}
+
+.logo-float {
+  animation: logo-float 3s ease-in-out infinite;
+}
+
+/* Enhanced divider */
+.modern-divider {
+  @apply relative;
+}
+
+.modern-divider::before {
+  content: '';
+  @apply absolute inset-0 flex items-center;
+  background: linear-gradient(
+    to right,
+    transparent,
+    hsl(var(--border) / 0.5),
+    transparent
+  );
+  height: 1px;
+}
+
+.modern-divider-text {
+  @apply relative bg-card px-4 py-1 rounded-full text-sm font-medium;
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.1);
+}
+
+/* Enhanced action buttons */
+.action-button {
+  @apply relative overflow-hidden transition-all duration-300;
+  background: hsl(var(--primary) / 0.1);
+  border: 1px solid hsl(var(--border) / 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.action-button:hover {
+  background: hsl(var(--primary) / 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px hsl(var(--primary) / 0.1);
+}
+
+/* Enhanced emotion result card */
+.emotion-result {
+  @apply relative overflow-hidden;
+  background: hsl(var(--accent) / 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsl(var(--border) / 0.1);
+  box-shadow: 0 8px 32px -8px hsl(var(--primary) / 0.2);
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px hsl(var(--primary) / 0.1);
+}
+
+/* Button animations */
+@keyframes button-pulse {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
+  }
+}
+
+.button-pulse {
+  animation: button-pulse 2s infinite;
+}
+
+/* Logo animation */
+@keyframes logo-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.logo-float {
+  animation: logo-float 3s ease-in-out infinite;
+}
+
+/* Modern background animations and patterns */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.bg-grid-white {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.1) 1px, transparent 1px);
+}
+
+/* Glass morphism effect */
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Add subtle animation to the background */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.modern-bg {
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite;
+}

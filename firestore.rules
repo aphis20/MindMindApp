@@ -1,0 +1,85 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isUserProfile(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isCircleMember(circleId) {
+      return exists(/databases/$(database)/documents/circleMembers/$(request.auth.uid + '_' + circleId));
+    }
+    
+    function isCircleAdmin(circleId) {
+      let memberDoc = get(/databases/$(database)/documents/circleMembers/$(request.auth.uid + '_' + circleId));
+      return memberDoc.data.role == 'admin';
+    }
+    
+    function isCircleCreator(circleData) {
+      return request.auth.uid == circleData.creatorId;
+    }
+
+    // Profiles collection
+    match /profiles/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isUserProfile(userId);
+      allow update: if isUserProfile(userId);
+      allow delete: if false; // Don't allow profile deletion
+    }
+
+    // Circles collection
+    match /circles/{circleId} {
+      allow read: if isAuthenticated() && 
+        (!resource.data.isPrivate || isCircleMember(circleId));
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+        (isCircleCreator(resource.data) || isCircleAdmin(circleId));
+      allow delete: if isAuthenticated() && isCircleCreator(resource.data);
+    }
+
+    // Circle members collection
+    match /circleMembers/{membershipId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+        (
+          // Allow users to join public circles
+          !get(/databases/$(database)/documents/circles/$(resource.data.circleId)).data.isPrivate ||
+          // Or if they're invited by an admin
+          isCircleAdmin(resource.data.circleId)
+        );
+      allow update: if isAuthenticated() && isCircleAdmin(resource.data.circleId);
+      allow delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.profileId || isCircleAdmin(resource.data.circleId));
+    }
+
+    // Journal entries collection
+    match /journalEntries/{entryId} {
+      allow read: if isAuthenticated() && 
+        (
+          !resource.data.isPrivate || 
+          request.auth.uid == resource.data.authorId
+        );
+      allow create: if isAuthenticated() && 
+        request.resource.data.authorId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && 
+        resource.data.authorId == request.auth.uid;
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() && isCircleMember(resource.data.circleId);
+      allow create: if isAuthenticated() && isCircleMember(request.resource.data.circleId);
+      allow update: if false; // Messages cannot be edited
+      allow delete: if isAuthenticated() && 
+        (
+          resource.data.senderId == request.auth.uid || 
+          isCircleAdmin(resource.data.circleId)
+        );
+    }
+  }
+} 
